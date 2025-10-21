@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 @Entity
 public class TeamPosition {
     @Id
+    String teamNumber;
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_number")
     private Team team;

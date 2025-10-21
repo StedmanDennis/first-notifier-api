@@ -1,4 +1,4 @@
-package com.first_notifier_api.domain.dto;
+package com.first_notifier_api.domain.dto.http.response;
 
 import java.util.List;
 

@@ -1,14 +1,13 @@
 package com.first_notifier_api.infrastructure.servicies;
 
 
+import com.first_notifier_api.domain.dto.http.request.UpdateTeamRequest;
 import com.first_notifier_api.domain.events.QueuerAssigned;
-import com.first_notifier_api.domain.repositories.IMatchAllianceTeamRepository;
-import com.first_notifier_api.domain.repositories.IMatchRepository;
-import com.first_notifier_api.domain.repositories.IQueuerRepository;
-import com.first_notifier_api.domain.repositories.ITeamRepository;
+import com.first_notifier_api.domain.repositories.*;
 import com.first_notifier_api.domain.services.IEventService;
 import com.first_notifier_api.infrastructure.entity.MatchAllianceTeam;
 import com.first_notifier_api.infrastructure.entity.Queuer;
+import com.first_notifier_api.infrastructure.entity.Team;
 import com.first_notifier_api.infrastructure.entity.idclass.MatchAllianceTeamId;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -22,15 +21,18 @@ public class EventService implements IEventService {
     private final IMatchAllianceTeamRepository matchAllianceTeamRepository;
     private final IMatchRepository matchRepository;
     private final ITeamRepository teamRepository;
+    private final ITeamPositionRepository teamPositionRepository;
+    private final ISchoolRepository schoolRepository;
     private final NotifierService notifierService;
 
-    public EventService(IQueuerRepository IQueuerRepository, IMatchAllianceTeamRepository IMatchAllianceTeamRepository, IMatchRepository matchRepository, ITeamRepository teamRepository, NotifierService notifierService) {
+    public EventService(IQueuerRepository IQueuerRepository, IMatchAllianceTeamRepository IMatchAllianceTeamRepository, IMatchRepository matchRepository, ITeamRepository teamRepository, ITeamPositionRepository teamPositionRepository, ISchoolRepository schoolRepository, NotifierService notifierService) {
         this.queuerRepository = IQueuerRepository;
         this.matchAllianceTeamRepository = IMatchAllianceTeamRepository;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
+        this.teamPositionRepository = teamPositionRepository;
+        this.schoolRepository = schoolRepository;
         this.notifierService = notifierService;
-
     }
 
     @Transactional
@@ -64,7 +66,30 @@ public class EventService implements IEventService {
         return teamRepository.getTeams();
     }
 
-    public List<ITeamRepository.GetTeamPositionsQueryResult> getTeamPositions() {
-        return teamRepository.getTeamPositions();
+    public void removeTeam(String teamNumber) {
+        teamRepository.deleteById(teamNumber);
+    }
+
+    public void updateTeam(UpdateTeamRequest updatedTeam) {
+        Optional<Team> targetOptional = teamRepository.getTeamForUpdate(updatedTeam.teamNumber());
+
+        if (targetOptional.isPresent()){
+            Team target = targetOptional.get();
+            if (updatedTeam.name() != null){
+                target.setName(updatedTeam.name());
+            }
+            if (updatedTeam.schoolId() != null){
+                target.getSchool().setId(updatedTeam.schoolId());
+            }
+            teamRepository.save(target);
+        }
+    }
+
+    public List<ITeamPositionRepository.GetTeamPositionsQueryResult> getTeamPositions() {
+        return teamPositionRepository.getTeamPositions();
+    }
+
+    public List<ISchoolRepository.GetAllSchoolsQueryResult> getAllSchools() {
+        return schoolRepository.getAllSchools();
     }
 }
