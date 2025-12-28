@@ -5,7 +5,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-
 import java.util.Set;
 
 @Entity

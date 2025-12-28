@@ -33,7 +33,8 @@ public class MatchAllianceTeamId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof MatchAllianceTeamId that)) return false;
+        if (!(o instanceof MatchAllianceTeamId that))
+            return false;
         return Objects.equals(matchAlliance, that.matchAlliance) && Objects.equals(team, that.team);
     }
 

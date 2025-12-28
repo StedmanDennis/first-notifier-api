@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 public class Match {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Integer scheduleOrder;
     private Integer fieldNumber;

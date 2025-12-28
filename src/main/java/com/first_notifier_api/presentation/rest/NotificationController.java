@@ -18,18 +18,18 @@ public class NotificationController {
     }
 
     @GetMapping("/serverSentEvents")
-    public Flux<ServerSentEvent<Object>> sendNotification(){
+    public Flux<ServerSentEvent<Object>> sendNotification() {
         return notifier.getSink().asFlux();
     }
 
     @PostMapping("/webPush/subscribe")
-    public ResponseEntity<Object> webPushSubscribe(@RequestBody Subscription subscription){
+    public ResponseEntity<Object> webPushSubscribe(@RequestBody Subscription subscription) {
         notifier.subscribe(subscription);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/webPush/unsubscribe")
-    public ResponseEntity<Object> webPushUnsubscribe(@RequestBody Subscription subscription){
+    public ResponseEntity<Object> webPushUnsubscribe(@RequestBody Subscription subscription) {
         notifier.unsubscribe(subscription.endpoint);
         return ResponseEntity.noContent().build();
     }

@@ -10,10 +10,16 @@ import java.util.List;
 
 public interface IEventService {
     void assignQueuerToTeam(Long matchAllianceId, String teamNumber, Long queuerId);
+
     List<IMatchRepository.EventScheduleQueryResult> getEventSchedule();
+
     List<ITeamRepository.GetTeamsQueryResult> getTeams();
+
     void removeTeam(String teamNumber);
+
     void updateTeam(UpdateTeamRequest updatedTeam);
+
     List<ITeamPositionRepository.GetTeamPositionsQueryResult> getTeamPositions();
+
     List<ISchoolRepository.GetAllSchoolsQueryResult> getAllSchools();
 }

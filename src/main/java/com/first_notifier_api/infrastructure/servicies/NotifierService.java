@@ -33,17 +33,17 @@ public class NotifierService implements INotifier, IWebPushSubscriber {
     private PushService pushService;
     private List<Subscription> subscriptions = new ArrayList<>();
 
-
-    public NotifierService()  {
+    public NotifierService() {
         Security.addProvider(new BouncyCastleProvider());
         this.sink = Sinks.many().multicast().onBackpressureBuffer();
     }
 
-    //note check how spring dependency injection works to figure out why properties with @Value are null during object initialization
+    // note check how spring dependency injection works to figure out why properties
+    // with @Value are null during object initialization
     @PostConstruct
-    private void postConstruct() throws GeneralSecurityException{
-        //https://github.com/web-push-libs/web-push-php/issues/359
-        this.pushService = new PushService(webPushPublicKey, webPushPrivateKey, "mailto:"+webPushMailTo);
+    private void postConstruct() throws GeneralSecurityException {
+        // https://github.com/web-push-libs/web-push-php/issues/359
+        this.pushService = new PushService(webPushPublicKey, webPushPrivateKey, "mailto:" + webPushMailTo);
     }
 
     public Sinks.Many<ServerSentEvent<Object>> getSink() {
@@ -52,8 +52,8 @@ public class NotifierService implements INotifier, IWebPushSubscriber {
 
     @Override
     public void subscribe(Subscription subscription) {
-        //presuming the endpoint is enough to uniquely identify a subscription
-        if (this.subscriptions.stream().noneMatch(sub -> sub.endpoint.equals(subscription.endpoint))){
+        // presuming the endpoint is enough to uniquely identify a subscription
+        if (this.subscriptions.stream().noneMatch(sub -> sub.endpoint.equals(subscription.endpoint))) {
             this.subscriptions.add(subscription);
         }
     }
@@ -68,14 +68,13 @@ public class NotifierService implements INotifier, IWebPushSubscriber {
     public void queuerAssigned(QueuerAssigned assignment) {
         ServerSentEvent<Object> event = ServerSentEvent.builder()
                 .data(
-                        assignment
-                )
+                        assignment)
                 .build();
         sink.tryEmitNext(event);
 
         try {
             for (Subscription sub : subscriptions) {
-                //seems to take a long time on the first send, likely encrypting
+                // seems to take a long time on the first send, likely encrypting
                 pushService.send(new Notification(sub, new ObjectMapper().writeValueAsString(assignment)));
             }
         } catch (Exception e) {

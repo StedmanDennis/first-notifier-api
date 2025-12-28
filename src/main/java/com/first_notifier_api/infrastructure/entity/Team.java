@@ -11,8 +11,8 @@ public class Team {
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     private School school;
-    //one to one relationship will always be fetched
-    //https://vladmihalcea.com/best-way-onetoone-optional/
+    // one to one relationship will always be fetched
+    // https://vladmihalcea.com/best-way-onetoone-optional/
     @OneToOne(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private TeamPosition position;
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

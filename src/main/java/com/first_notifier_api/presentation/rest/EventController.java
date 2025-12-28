@@ -23,24 +23,26 @@ public class EventController {
     }
 
     @GetMapping("/schedule")
-    public ResponseEntity<GetScheduleResponse> getSchedule(){
+    public ResponseEntity<GetScheduleResponse> getSchedule() {
         var schedule = eventService.getEventSchedule();
         var responseBody = schedule.stream().map(m -> {
-            var alliances = m.getAlliances().stream().map(a -> new GetScheduleResponse.Alliance(a.getAllianceColor(), a.getTeams().stream().map(t -> t.getTeam().getTeamNumber()).toList())).toList();
-            return new GetScheduleResponse.Match(m.getId(), m.getScheduleOrder(), m.getStatus(), m.getStage(), alliances);
+            var alliances = m.getAlliances().stream().map(a -> new GetScheduleResponse.Alliance(a.getAllianceColor(),
+                    a.getTeams().stream().map(t -> t.getTeam().getTeamNumber()).toList())).toList();
+            return new GetScheduleResponse.Match(m.getId(), m.getScheduleOrder(), m.getStatus(), m.getStage(),
+                    alliances);
         }).toList();
         GetScheduleResponse response = new GetScheduleResponse(responseBody);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/match/assign/queuer")
-    public ResponseEntity<Void> assignQueuer(@RequestBody AssignQueuerRequest request){
+    public ResponseEntity<Void> assignQueuer(@RequestBody AssignQueuerRequest request) {
         eventService.assignQueuerToTeam(request.matchAllianceId(), request.teamNumber(), request.queuerId());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/teams")
-    public ResponseEntity<List<ITeamRepository.GetTeamsQueryResult>> getAllTeams(){
+    public ResponseEntity<List<ITeamRepository.GetTeamsQueryResult>> getAllTeams() {
         return ResponseEntity.ok(eventService.getTeams());
     }
 
@@ -50,17 +52,17 @@ public class EventController {
     }
 
     @DeleteMapping("/team/{teamNumber}")
-    public void removeTeam(@PathVariable String teamNumber){
+    public void removeTeam(@PathVariable String teamNumber) {
         eventService.removeTeam(teamNumber);
     }
 
     @GetMapping("/team/positions")
-    public ResponseEntity<List<ITeamPositionRepository.GetTeamPositionsQueryResult>> getAllTeamPositions(){
+    public ResponseEntity<List<ITeamPositionRepository.GetTeamPositionsQueryResult>> getAllTeamPositions() {
         return ResponseEntity.ok(eventService.getTeamPositions());
     }
 
     @GetMapping("/schools")
-    public ResponseEntity<List<ISchoolRepository.GetAllSchoolsQueryResult>> getAllSchools(){
+    public ResponseEntity<List<ISchoolRepository.GetAllSchoolsQueryResult>> getAllSchools() {
         return ResponseEntity.ok(eventService.getAllSchools());
     }
 }

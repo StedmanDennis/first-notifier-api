@@ -7,8 +7,9 @@ import org.springframework.data.repository.ListCrudRepository;
 import java.util.List;
 
 public interface ISchoolRepository extends ListCrudRepository<School, Long> {
-    interface GetAllSchoolsQueryResult{
+    interface GetAllSchoolsQueryResult {
         long getId();
+
         String getName();
     }
 

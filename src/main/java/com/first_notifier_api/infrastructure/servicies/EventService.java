@@ -1,6 +1,5 @@
 package com.first_notifier_api.infrastructure.servicies;
 
-
 import com.first_notifier_api.domain.dto.http.request.UpdateTeamRequest;
 import com.first_notifier_api.domain.events.QueuerAssigned;
 import com.first_notifier_api.domain.repositories.*;
@@ -25,7 +24,10 @@ public class EventService implements IEventService {
     private final ISchoolRepository schoolRepository;
     private final NotifierService notifierService;
 
-    public EventService(IQueuerRepository IQueuerRepository, IMatchAllianceTeamRepository IMatchAllianceTeamRepository, IMatchRepository matchRepository, ITeamRepository teamRepository, ITeamPositionRepository teamPositionRepository, ISchoolRepository schoolRepository, NotifierService notifierService) {
+    public EventService(IQueuerRepository IQueuerRepository, IMatchAllianceTeamRepository IMatchAllianceTeamRepository,
+            IMatchRepository matchRepository, ITeamRepository teamRepository,
+            ITeamPositionRepository teamPositionRepository, ISchoolRepository schoolRepository,
+            NotifierService notifierService) {
         this.queuerRepository = IQueuerRepository;
         this.matchAllianceTeamRepository = IMatchAllianceTeamRepository;
         this.matchRepository = matchRepository;
@@ -39,23 +41,29 @@ public class EventService implements IEventService {
     public void assignQueuerToTeam(Long matchAllianceId, String teamNumber, Long queuerId) {
         boolean isUnassignment = queuerId == null;
 
-        Optional<MatchAllianceTeam> matchAllianceTeamOptional = matchAllianceTeamRepository.findById(new MatchAllianceTeamId(matchAllianceId, teamNumber));
+        Optional<MatchAllianceTeam> matchAllianceTeamOptional = matchAllianceTeamRepository
+                .findById(new MatchAllianceTeamId(matchAllianceId, teamNumber));
 
-        if (matchAllianceTeamOptional.isEmpty()) return;
+        if (matchAllianceTeamOptional.isEmpty())
+            return;
         MatchAllianceTeam matchAllianceTeam = matchAllianceTeamOptional.get();
         Queuer newQueuer = null;
         Queuer oldQueuer = matchAllianceTeam.getAssignedQueuer();
-        if (!isUnassignment){
+        if (!isUnassignment) {
             Optional<Queuer> queuerOptional = queuerRepository.findById(queuerId);
-            if (queuerOptional.isEmpty()) return;
+            if (queuerOptional.isEmpty())
+                return;
             newQueuer = queuerOptional.get();
         }
-        if (newQueuer == oldQueuer) return;
+        if (newQueuer == oldQueuer)
+            return;
 
         matchAllianceTeam.setAssignedQueuer(newQueuer);
 
         matchAllianceTeamRepository.save(matchAllianceTeam);
-        notifierService.queuerAssigned(new QueuerAssigned(matchAllianceTeam.getMatchAlliance().getMatch().getScheduleOrder(), teamNumber, queuerId, oldQueuer != null ? oldQueuer.getId() : null));
+        notifierService
+                .queuerAssigned(new QueuerAssigned(matchAllianceTeam.getMatchAlliance().getMatch().getScheduleOrder(),
+                        teamNumber, queuerId, oldQueuer != null ? oldQueuer.getId() : null));
     }
 
     public List<IMatchRepository.EventScheduleQueryResult> getEventSchedule() {
@@ -73,12 +81,12 @@ public class EventService implements IEventService {
     public void updateTeam(UpdateTeamRequest updatedTeam) {
         Optional<Team> targetOptional = teamRepository.getTeamForUpdate(updatedTeam.teamNumber());
 
-        if (targetOptional.isPresent()){
+        if (targetOptional.isPresent()) {
             Team target = targetOptional.get();
-            if (updatedTeam.name() != null){
+            if (updatedTeam.name() != null) {
                 target.setName(updatedTeam.name());
             }
-            if (updatedTeam.schoolId() != null){
+            if (updatedTeam.schoolId() != null) {
                 target.getSchool().setId(updatedTeam.schoolId());
             }
             teamRepository.save(target);

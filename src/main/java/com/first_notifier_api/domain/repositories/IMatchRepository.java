@@ -12,36 +12,44 @@ import java.util.Set;
 public interface IMatchRepository extends ListCrudRepository<Match, Long> {
     interface EventScheduleQueryResult {
         int getId();
+
         int getScheduleOrder();
+
         MatchStage getStage();
+
         MatchStatus getStatus();
+
         interface Alliance {
             String getAllianceColor();
+
             interface AllianceMatchTeam {
                 Team getTeam();
-                interface Team{
+
+                interface Team {
                     String getTeamNumber();
                 }
             }
+
             Set<AllianceMatchTeam> getTeams();
         }
+
         Set<Alliance> getAlliances();
 
     }
 
     /*
-    """
-            select
-            m.id as matchId,
-            m.scheduleOrder as order,
-            m.stage as stage,
-            m.status as status,
-            ma.allianceColor as color
-            from Match m
-            join m.alliances ma
-            join ma.teams mat
-            order by m.scheduleOrder
-            """
+     * """
+     * select
+     * m.id as matchId,
+     * m.scheduleOrder as order,
+     * m.stage as stage,
+     * m.status as status,
+     * ma.allianceColor as color
+     * from Match m
+     * join m.alliances ma
+     * join ma.teams mat
+     * order by m.scheduleOrder
+     * """
      */
     @Query("""
             select

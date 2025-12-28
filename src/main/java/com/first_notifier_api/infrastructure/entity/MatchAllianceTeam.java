@@ -40,4 +40,3 @@ public class MatchAllianceTeam {
         this.assignedQueuer = assignedQueuer;
     }
 }
-

@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface ITeamRepository extends ListCrudRepository<Team, String> {
     interface GetTeamsQueryResult {
         String getTeamNumber();
+
         String getName();
+
         int getSchoolId();
     }
 

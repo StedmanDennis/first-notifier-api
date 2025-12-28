@@ -9,12 +9,13 @@ import java.util.List;
 public interface ITeamPositionRepository extends ListCrudRepository<TeamPosition, String> {
     interface GetTeamPositionsQueryResult {
         String getTeamNumber();
+
         int getX();
+
         int getY();
     }
 
-
-    //Todo remove the join with team
+    // Todo remove the join with team
     @Query("select t.teamNumber as teamNumber, tp.x as x, tp.y as y from Team t join t.position tp")
     List<GetTeamPositionsQueryResult> getTeamPositions();
 }

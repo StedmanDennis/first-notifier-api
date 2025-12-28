@@ -8,7 +8,7 @@ import java.util.Set;
 public class MatchAlliance {
     @Id
     private Long id;
-    //TODO figure out how to put an index on this column
+    // TODO figure out how to put an index on this column
     @ManyToOne(fetch = FetchType.LAZY)
     private Match match;
     @OneToMany(mappedBy = "matchAlliance", fetch = FetchType.LAZY)
