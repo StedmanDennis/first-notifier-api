@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ITeamRepository extends ListCrudRepository<Team, String> {
     interface GetTeamsQueryResult {
@@ -20,5 +19,5 @@ public interface ITeamRepository extends ListCrudRepository<Team, String> {
     List<GetTeamsQueryResult> getTeams();
 
     @Query("select t, s from Team t join t.school s where t.teamNumber = :teamNumber")
-    Optional<Team> getTeamForUpdate(String teamNumber);
+    Team getTeamForUpdate(String teamNumber);
 }

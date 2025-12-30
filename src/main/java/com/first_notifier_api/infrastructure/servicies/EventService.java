@@ -79,18 +79,18 @@ public class EventService implements IEventService {
     }
 
     public void updateTeam(UpdateTeamRequest updatedTeam) {
-        Optional<Team> targetOptional = teamRepository.getTeamForUpdate(updatedTeam.teamNumber());
+        Team target = teamRepository.getTeamForUpdate(updatedTeam.teamNumber());
 
-        if (targetOptional.isPresent()) {
-            Team target = targetOptional.get();
-            if (updatedTeam.name() != null) {
-                target.setName(updatedTeam.name());
-            }
-            if (updatedTeam.schoolId() != null) {
-                target.getSchool().setId(updatedTeam.schoolId());
-            }
-            teamRepository.save(target);
+        if (target == null)
+            return;
+
+        if (updatedTeam.name() != null) {
+            target.setName(updatedTeam.name());
         }
+        if (updatedTeam.schoolId() != null) {
+            target.getSchool().setId(updatedTeam.schoolId());
+        }
+        teamRepository.save(target);
     }
 
     public List<ITeamPositionRepository.GetTeamPositionsQueryResult> getTeamPositions() {
