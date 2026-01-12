@@ -1,5 +1,6 @@
 package com.first_notifier_api.domain.services;
 
+import com.first_notifier_api.domain.dto.http.request.BatchUpdateTeamPositionsRequest;
 import com.first_notifier_api.domain.dto.http.request.UpdateTeamRequest;
 import com.first_notifier_api.domain.repositories.IMatchRepository;
 import com.first_notifier_api.domain.repositories.ISchoolRepository;
@@ -20,6 +21,8 @@ public interface IEventService {
     void updateTeam(UpdateTeamRequest updatedTeam);
 
     List<ITeamPositionRepository.GetTeamPositionsQueryResult> getTeamPositions();
+
+    void batchUpdateTeamPositions(BatchUpdateTeamPositionsRequest request);
 
     List<ISchoolRepository.GetAllSchoolsQueryResult> getAllSchools();
 }

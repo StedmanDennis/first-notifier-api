@@ -1,5 +1,6 @@
 package com.first_notifier_api.infrastructure.servicies;
 
+import com.first_notifier_api.domain.dto.http.request.BatchUpdateTeamPositionsRequest;
 import com.first_notifier_api.domain.dto.http.request.UpdateTeamRequest;
 import com.first_notifier_api.domain.events.QueuerAssigned;
 import com.first_notifier_api.domain.repositories.*;
@@ -7,6 +8,7 @@ import com.first_notifier_api.domain.services.IEventService;
 import com.first_notifier_api.infrastructure.entity.MatchAllianceTeam;
 import com.first_notifier_api.infrastructure.entity.Queuer;
 import com.first_notifier_api.infrastructure.entity.Team;
+import com.first_notifier_api.infrastructure.entity.TeamPosition;
 import com.first_notifier_api.infrastructure.entity.idclass.MatchAllianceTeamId;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -91,6 +93,18 @@ public class EventService implements IEventService {
             target.getSchool().setId(updatedTeam.schoolId());
         }
         teamRepository.save(target);
+    }
+
+    @Transactional
+    public void batchUpdateTeamPositions(BatchUpdateTeamPositionsRequest request) {
+        request.updates().forEach(p -> {
+            TeamPosition teamPosition = teamPositionRepository.findById(p.teamNumber()).orElse(null);
+            if (teamPosition == null)
+                return;
+            teamPosition.setX(p.x());
+            teamPosition.setY(p.y());
+            teamPositionRepository.save(teamPosition);
+        });
     }
 
     public List<ITeamPositionRepository.GetTeamPositionsQueryResult> getTeamPositions() {

@@ -1,6 +1,7 @@
 package com.first_notifier_api.presentation.rest;
 
 import com.first_notifier_api.domain.dto.http.request.AssignQueuerRequest;
+import com.first_notifier_api.domain.dto.http.request.BatchUpdateTeamPositionsRequest;
 import com.first_notifier_api.domain.dto.http.request.UpdateTeamRequest;
 import com.first_notifier_api.domain.dto.http.response.GetScheduleResponse;
 import com.first_notifier_api.domain.repositories.ISchoolRepository;
@@ -59,6 +60,11 @@ public class EventController {
     @GetMapping("/team/positions")
     public ResponseEntity<List<ITeamPositionRepository.GetTeamPositionsQueryResult>> getAllTeamPositions() {
         return ResponseEntity.ok(eventService.getTeamPositions());
+    }
+
+    @PatchMapping("/team/positions/update")
+    public void batchUpdateTeamPosition(@RequestBody BatchUpdateTeamPositionsRequest request) {
+        eventService.batchUpdateTeamPositions(request);
     }
 
     @GetMapping("/schools")
