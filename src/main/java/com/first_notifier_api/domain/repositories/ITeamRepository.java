@@ -1,12 +1,18 @@
 package com.first_notifier_api.domain.repositories;
 
 import com.first_notifier_api.infrastructure.entity.Team;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.List;
 
 public interface ITeamRepository extends ListCrudRepository<Team, String> {
+    // TODO remove @Schema annotations from respository, create a dto in
+    // dto.http.response that is mapped from the query result
+    @Schema(requiredProperties = { "teamNumber", "name", "schoolId" })
     interface GetTeamsQueryResult {
         String getTeamNumber();
 
