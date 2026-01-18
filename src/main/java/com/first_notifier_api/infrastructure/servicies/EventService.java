@@ -11,6 +11,9 @@ import com.first_notifier_api.infrastructure.entity.Team;
 import com.first_notifier_api.infrastructure.entity.TeamPosition;
 import com.first_notifier_api.infrastructure.entity.idclass.MatchAllianceTeamId;
 import jakarta.transaction.Transactional;
+
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,9 +43,7 @@ public class EventService implements IEventService {
     }
 
     @Transactional
-    public void assignQueuerToTeam(Long matchAllianceId, String teamNumber, Long queuerId) {
-        boolean isUnassignment = queuerId == null;
-
+    public void assignQueuerToTeam(@NonNull Long matchAllianceId, @NonNull String teamNumber, @Nullable Long queuerId) {
         Optional<MatchAllianceTeam> matchAllianceTeamOptional = matchAllianceTeamRepository
                 .findById(new MatchAllianceTeamId(matchAllianceId, teamNumber));
 
@@ -51,7 +52,7 @@ public class EventService implements IEventService {
         MatchAllianceTeam matchAllianceTeam = matchAllianceTeamOptional.get();
         Queuer newQueuer = null;
         Queuer oldQueuer = matchAllianceTeam.getAssignedQueuer();
-        if (!isUnassignment) {
+        if (queuerId != null) {
             Optional<Queuer> queuerOptional = queuerRepository.findById(queuerId);
             if (queuerOptional.isEmpty())
                 return;
@@ -76,11 +77,11 @@ public class EventService implements IEventService {
         return teamRepository.getTeams();
     }
 
-    public void removeTeam(String teamNumber) {
+    public void removeTeam(@NonNull String teamNumber) {
         teamRepository.deleteById(teamNumber);
     }
 
-    public void updateTeam(UpdateTeamRequest updatedTeam) {
+    public void updateTeam(@NonNull UpdateTeamRequest updatedTeam) {
         Team target = teamRepository.getTeamForUpdate(updatedTeam.teamNumber());
 
         if (target == null)
@@ -96,7 +97,7 @@ public class EventService implements IEventService {
     }
 
     @Transactional
-    public void batchUpdateTeamPositions(BatchUpdateTeamPositionsRequest request) {
+    public void batchUpdateTeamPositions(@NonNull BatchUpdateTeamPositionsRequest request) {
         request.updates().forEach(p -> {
             TeamPosition teamPosition = teamPositionRepository.findById(p.teamNumber()).orElse(null);
             if (teamPosition == null)

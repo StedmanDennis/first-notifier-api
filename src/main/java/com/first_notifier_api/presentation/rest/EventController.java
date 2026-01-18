@@ -9,6 +9,7 @@ import com.first_notifier_api.domain.repositories.ITeamPositionRepository;
 import com.first_notifier_api.domain.repositories.ITeamRepository;
 import com.first_notifier_api.domain.services.IEventService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +28,11 @@ public class EventController {
     public ResponseEntity<GetScheduleResponse> getSchedule() {
         var schedule = eventService.getEventSchedule();
         var responseBody = schedule.stream().map(m -> {
-            var alliances = m.getAlliances().stream().map(a -> new GetScheduleResponse.Alliance(a.getAllianceColor(),
-                    a.getTeams().stream().map(t -> t.getTeam().getTeamNumber()).toList())).toList();
+            var alliances = m.getAlliances().stream().map(a -> {
+                var teams = a.getTeams().stream().map(t -> t.getTeam().getTeamNumber()).toList();
+                var alliance = new GetScheduleResponse.Alliance(a.getAllianceColor(), teams);
+                return alliance;
+            }).toList();
             return new GetScheduleResponse.Match(m.getId(), m.getScheduleOrder(), m.getStatus(), m.getStage(),
                     alliances);
         }).toList();
@@ -48,12 +52,12 @@ public class EventController {
     }
 
     @PatchMapping("/team")
-    public void updateTeam(@RequestBody UpdateTeamRequest request) {
+    public void updateTeam(@RequestBody @NonNull UpdateTeamRequest request) {
         eventService.updateTeam(request);
     }
 
     @DeleteMapping("/team/{teamNumber}")
-    public void removeTeam(@PathVariable String teamNumber) {
+    public void removeTeam(@PathVariable @NonNull String teamNumber) {
         eventService.removeTeam(teamNumber);
     }
 
@@ -63,7 +67,7 @@ public class EventController {
     }
 
     @PatchMapping("/team/positions/update")
-    public void batchUpdateTeamPosition(@RequestBody BatchUpdateTeamPositionsRequest request) {
+    public void batchUpdateTeamPosition(@RequestBody @NonNull BatchUpdateTeamPositionsRequest request) {
         eventService.batchUpdateTeamPositions(request);
     }
 

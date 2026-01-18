@@ -9,20 +9,22 @@ import com.first_notifier_api.domain.repositories.ITeamRepository;
 
 import java.util.List;
 
+import org.springframework.lang.NonNull;
+
 public interface IEventService {
-    void assignQueuerToTeam(Long matchAllianceId, String teamNumber, Long queuerId);
+    void assignQueuerToTeam(@NonNull Long matchAllianceId, @NonNull String teamNumber, Long queuerId);
 
     List<IMatchRepository.EventScheduleQueryResult> getEventSchedule();
 
     List<ITeamRepository.GetTeamsQueryResult> getTeams();
 
-    void removeTeam(String teamNumber);
+    void removeTeam(@NonNull String teamNumber);
 
-    void updateTeam(UpdateTeamRequest updatedTeam);
+    void updateTeam(@NonNull UpdateTeamRequest updatedTeam);
 
     List<ITeamPositionRepository.GetTeamPositionsQueryResult> getTeamPositions();
 
-    void batchUpdateTeamPositions(BatchUpdateTeamPositionsRequest request);
+    void batchUpdateTeamPositions(@NonNull BatchUpdateTeamPositionsRequest request);
 
     List<ISchoolRepository.GetAllSchoolsQueryResult> getAllSchools();
 }
