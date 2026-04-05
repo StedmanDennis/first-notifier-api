@@ -1,0 +1,44 @@
+name: first_notifier_dev
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: first_notifier_api
+    ports:
+      - "8080:8080"
+      - "5005:5005" # Remote debugging port
+    env_file:
+      - ./compose.dev.env
+    volumes:
+      # Bind mount the host source code directly to the container for hot reload
+      - ..:/app
+      # Create an anonymous volume for the target directory to avoid overwriting the host's target dir
+      - /app/target
+      # Mount maven repository to a docker volume to cache dependencies between builds
+      - maven-repo:/root/.m2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: first_notifier_db
+    env_file:
+      - ./compose.dev.env
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persist PostgreSQL data locally
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+
+volumes:
+  pgdata:
+  maven-repo:

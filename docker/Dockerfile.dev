@@ -1,0 +1,17 @@
+# Use the official Maven image with Eclipse Temurin (Java 21)
+FROM maven:3.9.6-eclipse-temurin-21
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy only the pom.xml initially to cache dependencies
+COPY pom.xml .
+
+# Download dependencies (this step will be cached unless pom.xml changes)
+RUN mvn dependency:go-offline -B
+
+# Copy the source code (this is secondary, as docker-compose will bind-mount it)
+COPY src ./src
+
+# Default command to run the application with remote debugging enabled
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"]
