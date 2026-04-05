@@ -8,7 +8,10 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
+--ERROR: unrecognized configuration parameter "transaction_timeout"
+--https://stackoverflow.com/a/79059572/10085266
+--https://www.postgresql.org/docs/current/app-pgdump.html#:~:text=Because%20pg_dump%20is,the%20older%20server.
+--SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
